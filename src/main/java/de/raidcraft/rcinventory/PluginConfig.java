@@ -1,4 +1,4 @@
-package de.raidcraft.template;
+package de.raidcraft.rcinventory;
 
 import de.exlll.configlib.annotation.ConfigurationElement;
 import de.exlll.configlib.configs.yaml.BukkitYamlConfiguration;
@@ -27,6 +27,6 @@ public class PluginConfig extends BukkitYamlConfiguration {
         private String username = "sa";
         private String password = "sa";
         private String driver = "h2";
-        private String url = "jdbc:h2:~/skills.db";
+        private String url = "jdbc:h2:~/inventory.db";
     }
 }

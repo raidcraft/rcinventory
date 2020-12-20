@@ -1,4 +1,4 @@
-package de.raidcraft.template;
+package de.raidcraft.rcinventory;
 
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
@@ -15,8 +15,8 @@ public final class Messages {
     private Messages() {}
 
     public static void send(UUID playerId, Component message) {
-        if (PluginTemplate.isTesting()) return;
-        BukkitAudiences.create(PluginTemplate.instance())
+        if (RCInventory.isTesting()) return;
+        BukkitAudiences.create(RCInventory.instance())
                 .player(playerId)
                 .sendMessage(message);
     }
