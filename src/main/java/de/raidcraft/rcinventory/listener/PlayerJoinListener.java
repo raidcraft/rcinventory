@@ -6,8 +6,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.HashMap;
@@ -15,12 +17,12 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Delayed;
 
-public class PlayerListener implements Listener, Runnable {
+public class PlayerJoinListener implements Listener, Runnable {
 
     private RCInventory plugin;
     private Map<UUID, Long> restoreCache = new HashMap<>();
 
-    public PlayerListener(RCInventory plugin) {
+    public PlayerJoinListener(RCInventory plugin) {
 
         this.plugin = plugin;
 
@@ -38,19 +40,33 @@ public class PlayerListener implements Listener, Runnable {
         // login event we will delay this for one tick.
         restoreCache.put(event.getPlayer().getUniqueId(), System.currentTimeMillis());
         DelayedPlayerRestoreTask task = new DelayedPlayerRestoreTask(event.getPlayer());
-        Bukkit.getScheduler().runTaskLater(plugin, task, 1);
+        Bukkit.getScheduler().runTaskLater(plugin, task,
+                plugin.getPluginConfig().getRestoreDelayMs() / 50 /* Ms per tick */);
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onPlayerLeft(PlayerQuitEvent event) {
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPlayerDamage(EntityDamageEvent event) {
+        if(!(event.getEntity() instanceof Player)) {
+            return;
+        }
 
-        plugin.getInventoryManager().savePlayerInventory(event.getPlayer());
+        Player player = (Player)event.getEntity();
+        if(!restoreCache.containsKey(player.getUniqueId())) {
+            return;
+        }
+
+        // Cancel event due to ongoing restore process
+        event.setCancelled(true);
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onPlayerKicked(PlayerKickEvent event) {
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPlayerMove(PlayerMoveEvent event) {
+        if(!restoreCache.containsKey(event.getPlayer().getUniqueId())) {
+            return;
+        }
 
-        plugin.getInventoryManager().savePlayerInventory(event.getPlayer());
+        // Cancel event due to ongoing restore process
+        event.setCancelled(true);
     }
 
     private class DelayedPlayerRestoreTask implements Runnable {
@@ -63,8 +79,10 @@ public class PlayerListener implements Listener, Runnable {
 
         @Override
         public void run() {
-            plugin.getInventoryManager().restorePlayerInventory(player);
-            restoreCache.remove(player.getUniqueId());
+            if(restoreCache.containsKey(player.getUniqueId())) {
+                plugin.getInventoryManager().restorePlayerInventory(player);
+                restoreCache.remove(player.getUniqueId());
+            }
         }
     }
 
@@ -72,7 +90,7 @@ public class PlayerListener implements Listener, Runnable {
     public void run() {
         for (Map.Entry<UUID, Long> entry : restoreCache.entrySet()) {
             long timeGone = System.currentTimeMillis() - entry.getValue();
-            if(timeGone > 1000) {
+            if(timeGone > 500 + plugin.getPluginConfig().getRestoreDelayMs()) {
 
                 plugin.getLogger().warning("Found dirty entry in listener restore cache.");
 

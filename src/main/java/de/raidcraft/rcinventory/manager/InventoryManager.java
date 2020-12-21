@@ -1,11 +1,13 @@
 package de.raidcraft.rcinventory.manager;
 
+import de.raidcraft.rcinventory.Messages;
 import de.raidcraft.rcinventory.RCInventory;
 import de.raidcraft.rcinventory.holder.InventoryHolder;
 import de.raidcraft.rcinventory.holder.PlayerHolder;
 import de.raidcraft.rcinventory.inventory.Base64Inventory;
 import de.raidcraft.rcinventory.inventory.Inventory;
 import de.raidcraft.rcinventory.database.TDatabaseInventory;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.io.IOException;
@@ -60,6 +62,9 @@ public class InventoryManager {
         player.setExp(inventory.getHolder().getExp());
         if(inventory.getHolder().getHealth() > 0) {
             player.setHealth(inventory.getHolder().getHealth());
+        }
+        if(plugin.getPluginConfig().isRestoreMessage()) {
+            Messages.send(player, Messages.inventoryRestored(player, inventory));
         }
         plugin.getLogger().info("Restored inventory of '" + player.getDisplayName() + "' from database");
     }

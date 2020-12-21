@@ -1,5 +1,6 @@
 package de.raidcraft.rcinventory;
 
+import de.exlll.configlib.annotation.Comment;
 import de.exlll.configlib.annotation.ConfigurationElement;
 import de.exlll.configlib.configs.yaml.BukkitYamlConfiguration;
 import de.exlll.configlib.format.FieldNameFormatters;
@@ -13,6 +14,11 @@ import java.nio.file.Path;
 public class PluginConfig extends BukkitYamlConfiguration {
 
     private DatabaseConfig database = new DatabaseConfig();
+    @Comment("Delay in milliseconds between player login and inventory restore." +
+            "This should be long enough to overwrite any other plugins which manipulates inventory after login.")
+    private int restoreDelayMs = 500;
+    @Comment("Writes a chat message to player after inventory was restored")
+    private boolean restoreMessage = true;
 
     public PluginConfig(Path path) {
 

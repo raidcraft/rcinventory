@@ -1,5 +1,6 @@
 package de.raidcraft.rcinventory;
 
+import de.raidcraft.rcinventory.inventory.Inventory;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -9,6 +10,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.YELLOW;
 
 public final class Messages {
 
@@ -30,5 +32,10 @@ public final class Messages {
 
     public static void send(Player player, Component message) {
         send(player.getUniqueId(), message);
+    }
+
+    public static Component inventoryRestored(Player player, Inventory inventory) {
+
+        return text().append(text("Dein Inventar wurde geladen", YELLOW)).build();
     }
 }

@@ -4,7 +4,8 @@ import co.aikar.commands.PaperCommandManager;
 import de.raidcraft.rcinventory.commands.AdminCommands;
 import de.raidcraft.rcinventory.commands.PlayerCommands;
 import de.raidcraft.rcinventory.database.TDatabaseInventory;
-import de.raidcraft.rcinventory.listener.PlayerListener;
+import de.raidcraft.rcinventory.listener.PlayerJoinListener;
+import de.raidcraft.rcinventory.listener.PlayerLeaveListener;
 import de.raidcraft.rcinventory.manager.InventoryManager;
 import io.ebean.Database;
 import kr.entree.spigradle.annotations.PluginMain;
@@ -79,8 +80,11 @@ public class RCInventory extends JavaPlugin {
 
     private void setupListener() {
 
-        PlayerListener playerListener = new PlayerListener(this);
-        Bukkit.getPluginManager().registerEvents(playerListener, this);
+        PlayerJoinListener playerJoinListener = new PlayerJoinListener(this);
+        Bukkit.getPluginManager().registerEvents(playerJoinListener, this);
+
+        PlayerLeaveListener playerLeaveListener = new PlayerLeaveListener(this);
+        Bukkit.getPluginManager().registerEvents(playerLeaveListener, this);
     }
 
     private void setupCommands() {
