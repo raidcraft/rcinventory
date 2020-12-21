@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<migration xmlns="http://ebean-orm.github.io/xml/ns/dbmigration">
+    <changeSet type="apply">
+        <alterColumn columnName="serialized_inventory" tableName="rcinventory_inventories" type="clob" currentType="varchar" currentNotnull="false"/>
+    </changeSet>
+</migration>
