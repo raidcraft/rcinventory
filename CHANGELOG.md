@@ -1,3 +1,15 @@
+# [1.1.0](https://github.com/raidcraft/rcinventory/compare/v1.0.0...v1.1.0) (2020-12-21)
+
+
+### Bug Fixes
+
+* Save inventories on plugin disable method call ([abfe0e3](https://github.com/raidcraft/rcinventory/commit/abfe0e34dc15c44d9e7ef93837e2668e6828cc55))
+
+
+### Features
+
+* Add check if inventory is already up to date. Fixes [#11](https://github.com/raidcraft/rcinventory/issues/11) ([bd17515](https://github.com/raidcraft/rcinventory/commit/bd175152b570e3011dd6145d7720050c0d966606))
+
 # 1.0.0 (2020-12-21)
 
 
