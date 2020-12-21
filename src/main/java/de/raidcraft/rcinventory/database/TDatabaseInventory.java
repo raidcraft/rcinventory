@@ -83,12 +83,12 @@ public class TDatabaseInventory extends BaseEntity {
         TDatabaseInventory other = (TDatabaseInventory)obj;
 
         if(holderId != other.getHolderId()) return false;
-        if(serializedInventory != other.getSerializedInventory()) return false;
-        if(saturation != other.getSaturation()) return false;
-        if(health != other.getHealth()) return false;
+        if(!serializedInventory.equals(other.getSerializedInventory())) return false;
+        if(!saturation.equals(other.getSaturation())) return false;
+        if(!health.equals(other.getHealth())) return false;
         if(level != other.getLevel()) return false;
-        if(exp != other.getExp()) return false;
-        if(world != other.getWorld()) return false;
+        if(!exp.equals(other.getExp())) return false;
+        if(!world.equals(other.getWorld())) return false;
 
         return true;
     }
