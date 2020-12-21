@@ -1,8 +1,8 @@
 package de.raidcraft.rcinventory.database;
 
-import de.raidcraft.rcinventory.api.holder.SimpleHolder;
-import de.raidcraft.rcinventory.api.inventory.Base64Inventory;
-import de.raidcraft.rcinventory.api.inventory.Inventory;
+import de.raidcraft.rcinventory.holder.SimpleHolder;
+import de.raidcraft.rcinventory.inventory.Base64Inventory;
+import de.raidcraft.rcinventory.inventory.Inventory;
 import io.ebean.Finder;
 import lombok.Getter;
 import lombok.Setter;

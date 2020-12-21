@@ -1,6 +1,6 @@
-package de.raidcraft.rcinventory.api.inventory;
+package de.raidcraft.rcinventory.inventory;
 
-import de.raidcraft.rcinventory.api.holder.InventoryHolder;
+import de.raidcraft.rcinventory.holder.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
 public interface Inventory {

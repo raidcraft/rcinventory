@@ -1,9 +1,10 @@
 package de.raidcraft.rcinventory.manager;
 
 import de.raidcraft.rcinventory.RCInventory;
-import de.raidcraft.rcinventory.api.holder.InventoryHolder;
-import de.raidcraft.rcinventory.api.inventory.Base64Inventory;
-import de.raidcraft.rcinventory.api.inventory.Inventory;
+import de.raidcraft.rcinventory.holder.InventoryHolder;
+import de.raidcraft.rcinventory.holder.PlayerHolder;
+import de.raidcraft.rcinventory.inventory.Base64Inventory;
+import de.raidcraft.rcinventory.inventory.Inventory;
 import de.raidcraft.rcinventory.database.TDatabaseInventory;
 import org.bukkit.entity.Player;
 
@@ -20,8 +21,9 @@ public class InventoryManager {
     public void savePlayerInventory(Player player) {
 
         Inventory inventory;
+        PlayerHolder playerHolder = new PlayerHolder(player);
         try {
-            inventory = new Base64Inventory((InventoryHolder)player);
+            inventory = new Base64Inventory(playerHolder);
         } catch (IOException e) {
             plugin.getLogger().warning("Failed to serialize '" + player.getDisplayName()
                     + "' inventory: " + e.getMessage());

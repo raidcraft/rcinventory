@@ -1,14 +1,11 @@
-package de.raidcraft.rcinventory.api.inventory;
+package de.raidcraft.rcinventory.inventory;
 
-import de.raidcraft.rcinventory.api.holder.InventoryHolder;
+import de.raidcraft.rcinventory.holder.InventoryHolder;
 import de.raidcraft.rcinventory.util.BukkitSerialization;
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 public class Base64Inventory implements Inventory {

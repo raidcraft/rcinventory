@@ -1,4 +1,4 @@
-package de.raidcraft.rcinventory.api.holder;
+package de.raidcraft.rcinventory.holder;
 
 import lombok.Getter;
 import org.bukkit.Bukkit;

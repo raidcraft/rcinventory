@@ -1,4 +1,4 @@
-package de.raidcraft.rcinventory.api.holder;
+package de.raidcraft.rcinventory.holder;
 
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;

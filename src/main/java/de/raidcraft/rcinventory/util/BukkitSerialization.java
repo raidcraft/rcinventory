@@ -19,7 +19,6 @@ public class BukkitSerialization {
      *
      * @param playerInventory to turn into an array of strings.
      * @return string with serialized Inventory
-     * @throws IllegalStateException
      */
     public static String playerInventoryToBase64(PlayerInventory playerInventory) throws IllegalStateException {
         // This contains contents, armor and offhand (contents are indexes 0 - 35, armor 36 - 39, offhand - 40)
@@ -32,7 +31,6 @@ public class BukkitSerialization {
      *
      * @param items to turn into a Base64 String.
      * @return Base64 string of the items.
-     * @throws IllegalStateException
      */
     public static String itemStackArrayToBase64(ItemStack[] items) throws IllegalStateException {
         try {
@@ -61,7 +59,6 @@ public class BukkitSerialization {
      *
      * @param data Base64 string to convert to ItemStack array.
      * @return ItemStack array created from the Base64 string.
-     * @throws IOException
      */
     public static ItemStack[] itemStackArrayFromBase64(String data) throws IOException {
         try {
