@@ -58,5 +58,9 @@ public class InventoryManager {
         player.setSaturation(inventory.getHolder().getSaturation());
         player.setLevel(inventory.getHolder().getLevel());
         player.setExp(inventory.getHolder().getExp());
+        if(inventory.getHolder().getHealth() > 0) {
+            player.setHealth(inventory.getHolder().getHealth());
+        }
+        plugin.getLogger().info("Restored inventory of '" + player.getDisplayName() + "' from database");
     }
 }

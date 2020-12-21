@@ -43,4 +43,9 @@ public class PlayerHolder implements InventoryHolder {
     public ItemStack[] getContents() {
         return player.getInventory().getContents();
     }
+
+    @Override
+    public double getHealth() {
+        return player.getHealth();
+    }
 }

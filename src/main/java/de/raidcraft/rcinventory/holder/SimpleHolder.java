@@ -16,13 +16,15 @@ public class SimpleHolder implements InventoryHolder {
     private float exp;
     private float saturation;
     private int level;
+    private double health;
 
-    public SimpleHolder(UUID uuid, String world, float exp, int level, float saturation) {
+    public SimpleHolder(UUID uuid, String world, float exp, int level, float saturation, double health) {
         this.uuid = uuid;
         this.location = new Location(Bukkit.getWorld(world), 0, 0, 0);
         this.exp = exp;
         this.level = level;
         this.saturation = saturation;
+        this.health = health;
     }
 
     @Override

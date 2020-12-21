@@ -17,5 +17,7 @@ public interface InventoryHolder {
 
     float getExp();
 
+    double getHealth();
+
     ItemStack[] getContents();
 }
