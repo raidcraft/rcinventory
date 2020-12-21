@@ -23,15 +23,15 @@ public class TDatabaseInventory extends BaseEntity {
 
     public static final Finder<UUID, TDatabaseInventory> find = new Finder<>(TDatabaseInventory.class);
 
-    UUID holderId;
+    private UUID holderId;
     @Lob
-    String serializedInventory;
-    Float saturation;
-    Float exp;
-    int level;
-    long creationMillis;
-    String world;
-    Double health;
+    private String serializedInventory;
+    private Float saturation;
+    private Float exp;
+    private int level;
+    private long creationMillis;
+    private String world;
+    private Double health;
 
     public TDatabaseInventory(Inventory inventory) {
 
@@ -58,10 +58,38 @@ public class TDatabaseInventory extends BaseEntity {
 
     public static TDatabaseInventory getLatest(UUID holderId) {
         List<TDatabaseInventory> databaseInventories =
-                find.query().where().eq("holder_id", holderId).orderBy().desc("creation_millis")
+                find.query().where().eq("holder_id", holderId)
+                        .orderBy().desc("creation_millis")
                         .setMaxRows(1).findList();
         if(databaseInventories.size() < 1) return null;
 
         return databaseInventories.get(0);
+    }
+
+    public static TDatabaseInventory getLatest(UUID holderId, String world) {
+        List<TDatabaseInventory> databaseInventories =
+                find.query().where().eq("holder_id", holderId).eq("world", world)
+                        .orderBy().desc("creation_millis")
+                        .setMaxRows(1).findList();
+        if(databaseInventories.size() < 1) return null;
+
+        return databaseInventories.get(0);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof TDatabaseInventory)) return false;
+
+        TDatabaseInventory other = (TDatabaseInventory)obj;
+
+        if(holderId != other.getHolderId()) return false;
+        if(serializedInventory != other.getSerializedInventory()) return false;
+        if(saturation != other.getSaturation()) return false;
+        if(health != other.getHealth()) return false;
+        if(level != other.getLevel()) return false;
+        if(exp != other.getExp()) return false;
+        if(world != other.getWorld()) return false;
+
+        return true;
     }
 }

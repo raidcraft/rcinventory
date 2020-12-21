@@ -32,8 +32,16 @@ public class InventoryManager {
             return;
         }
 
+        // Get latest saved inventory of this player
+        TDatabaseInventory latestInventory = TDatabaseInventory.getLatest(playerHolder.getUniqueId(),
+                playerHolder.getLocation().getWorld().getName());
+
         // Save inventory to database
         TDatabaseInventory databaseInventory = new TDatabaseInventory(inventory);
+        if(latestInventory != null && latestInventory.equals(databaseInventory)) {
+            plugin.getLogger().info("Inventory of '" + player.getDisplayName() + "' already synced");
+            return;
+        }
         databaseInventory.save();
         plugin.getLogger().info("Synced inventory of '" + player.getDisplayName() + "' into database");
     }
