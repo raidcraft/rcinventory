@@ -3,6 +3,9 @@ package de.raidcraft.rcinventory;
 import co.aikar.commands.PaperCommandManager;
 import de.raidcraft.rcinventory.commands.AdminCommands;
 import de.raidcraft.rcinventory.commands.PlayerCommands;
+import de.raidcraft.rcinventory.database.TDatabaseInventory;
+import de.raidcraft.rcinventory.listener.PlayerListener;
+import de.raidcraft.rcinventory.manager.InventoryManager;
 import io.ebean.Database;
 import kr.entree.spigradle.annotations.PluginMain;
 import lombok.AccessLevel;
@@ -11,6 +14,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.silthus.ebean.Config;
 import net.silthus.ebean.EbeanWrapper;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
@@ -30,6 +34,9 @@ public class RCInventory extends JavaPlugin {
     private PluginConfig pluginConfig;
 
     private PaperCommandManager commandManager;
+
+    @Getter
+    private InventoryManager inventoryManager;
 
     @Getter
     private static boolean testing = false;
@@ -54,6 +61,8 @@ public class RCInventory extends JavaPlugin {
             setupListener();
             setupCommands();
         }
+
+        inventoryManager = new InventoryManager(this);
     }
 
     public void reload() {
@@ -70,7 +79,8 @@ public class RCInventory extends JavaPlugin {
 
     private void setupListener() {
 
-
+        PlayerListener playerListener = new PlayerListener(this);
+        Bukkit.getPluginManager().registerEvents(playerListener, this);
     }
 
     private void setupCommands() {
@@ -85,7 +95,7 @@ public class RCInventory extends JavaPlugin {
 
         this.database = new EbeanWrapper(Config.builder(this)
                 .entities(
-                        // TODO: add your database entities here
+                        TDatabaseInventory.class
                 )
                 .build()).connect();
     }
