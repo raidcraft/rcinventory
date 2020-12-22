@@ -2,8 +2,10 @@ package de.raidcraft.rcinventory;
 
 import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
+import de.raidcraft.rcinventory.database.TDatabaseInventory;
 import org.bukkit.entity.Player;
 import org.junit.jupiter.api.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class IntegrationTest {
 
@@ -24,6 +26,46 @@ public class IntegrationTest {
     }
 
     @Nested
+    @DisplayName("InventoryManager")
+    class InventoryManagerTests {
+
+        @BeforeEach
+        void setUp() {
+            TDatabaseInventory.find.all().forEach(entry -> entry.delete());
+        }
+
+        @Test
+        @DisplayName("save-inventory")
+        void storeInventory() {
+
+            Player player = server.addPlayer();
+
+            // Database must be empty
+            assertThat(TDatabaseInventory.find.query().findCount() == 0).isTrue();
+
+            // Add inventory
+            plugin.getInventoryManager().savePlayerInventory(player);
+
+            // Check if added
+            assertThat(TDatabaseInventory.find.query().findCount() == 1).isTrue();
+
+            // Add again -> Due to missing changes must not be saved
+            plugin.getInventoryManager().savePlayerInventory(player);
+
+            // Must still be '1'
+            assertThat(TDatabaseInventory.find.query().findCount() == 1).isTrue();
+
+            Player player2 = server.addPlayer();
+
+            // Add another players inventory
+            plugin.getInventoryManager().savePlayerInventory(player2);
+
+            // Must be '2'
+            assertThat(TDatabaseInventory.find.query().findCount() == 2).isTrue();
+        }
+    }
+
+    @Nested
     @DisplayName("Commands")
     class Commands {
 
@@ -35,20 +77,14 @@ public class IntegrationTest {
         }
 
         @Nested
-        @DisplayName("/template:admin")
+        @DisplayName("/rcinventories")
         class AdminCommands {
 
-            @Nested
-            @DisplayName("foo bar")
-            class add {
+            @Test
+            @DisplayName("reload")
+            void reload() {
 
-                @Test
-                @Disabled
-                @DisplayName("should work")
-                void shouldWork() {
-
-                    server.dispatchCommand(server.getConsoleSender(),"rc:template add foo " + player.getName() + " bar");
-                }
+                server.dispatchCommand(server.getConsoleSender(),"rcinventory reload");
             }
         }
     }

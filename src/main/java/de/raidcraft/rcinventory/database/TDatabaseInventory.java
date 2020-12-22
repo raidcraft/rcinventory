@@ -8,9 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.silthus.ebean.BaseEntity;
 
-import javax.persistence.Entity;
-import javax.persistence.Lob;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
@@ -25,6 +23,7 @@ public class TDatabaseInventory extends BaseEntity {
 
     private UUID holderId;
     @Lob
+    @Basic(fetch= FetchType.EAGER)
     private String serializedInventory;
     private Float saturation;
     private Float exp;
@@ -82,7 +81,7 @@ public class TDatabaseInventory extends BaseEntity {
 
         TDatabaseInventory other = (TDatabaseInventory)obj;
 
-        if(holderId != other.getHolderId()) return false;
+        if(!holderId.equals(other.getHolderId())) return false;
         if(!serializedInventory.equals(other.getSerializedInventory())) return false;
         if(!saturation.equals(other.getSaturation())) return false;
         if(!health.equals(other.getHealth())) return false;
