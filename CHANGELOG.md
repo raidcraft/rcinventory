@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/raidcraft/rcinventory/compare/v1.1.1...v1.2.0) (2020-12-22)
+
+
+### Features
+
+* Implement cyclic inventory saves. Closes [#7](https://github.com/raidcraft/rcinventory/issues/7) ([5e52e83](https://github.com/raidcraft/rcinventory/commit/5e52e83ac5661b36ce70b0fbae607a75dfabf38b))
+
 ## [1.1.1](https://github.com/raidcraft/rcinventory/compare/v1.1.0...v1.1.1) (2020-12-22)
 
 
