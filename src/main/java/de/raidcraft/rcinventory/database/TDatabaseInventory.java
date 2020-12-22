@@ -10,7 +10,9 @@ import net.silthus.ebean.BaseEntity;
 
 import javax.persistence.*;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -73,6 +75,22 @@ public class TDatabaseInventory extends BaseEntity {
         if(databaseInventories.size() < 1) return null;
 
         return databaseInventories.get(0);
+    }
+
+    public static List<TDatabaseInventory> getInventoriesOrderedByDate(UUID holderId) {
+
+        return find.query().where().eq("holder_id", holderId)
+                .orderBy().desc("creation_millis")
+                .findList();
+    }
+
+    public static Set<UUID> getStoredHolders() {
+
+        Set<TDatabaseInventory> distinctInventories = find.query().select("holderId").setDistinct(true).findSet();
+
+        Set<UUID> distinctHolderIds = new HashSet<>();
+        distinctInventories.forEach(entry -> distinctHolderIds.add(entry.holderId));
+        return distinctHolderIds;
     }
 
     @Override

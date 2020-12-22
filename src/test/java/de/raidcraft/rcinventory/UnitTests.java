@@ -5,6 +5,7 @@ import be.seeseemelk.mockbukkit.ServerMock;
 import de.raidcraft.rcinventory.database.TDatabaseInventory;
 import de.raidcraft.rcinventory.holder.SimpleHolder;
 import de.raidcraft.rcinventory.inventory.SimpleInventory;
+import io.ebean.Model;
 import org.bukkit.Material;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;

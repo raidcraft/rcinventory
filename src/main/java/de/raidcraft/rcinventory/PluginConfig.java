@@ -25,6 +25,8 @@ public class PluginConfig extends BukkitYamlConfiguration {
     private boolean logSkippedSaves = true;
     @Comment("Enable console messages about successfull inventory load events")
     private boolean logSuccessfulLoads = true;
+    @Comment("Number of how many inventory backups are kept per player")
+    private int playerInventoryBackupCount = 10;
 
     public PluginConfig(Path path) {
 

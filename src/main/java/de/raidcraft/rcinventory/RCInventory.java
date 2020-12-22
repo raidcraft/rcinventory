@@ -65,11 +65,13 @@ public class RCInventory extends JavaPlugin {
         }
 
         inventoryManager = new InventoryManager(this);
+        inventoryManager.cleanup();
     }
 
     public void reload() {
 
         loadConfig();
+        inventoryManager.cleanup();
     }
 
     @Override

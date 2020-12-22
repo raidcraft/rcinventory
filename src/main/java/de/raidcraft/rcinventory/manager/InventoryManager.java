@@ -14,9 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class InventoryManager {
 
@@ -107,6 +105,28 @@ public class InventoryManager {
         if(plugin.getPluginConfig().isLogSuccessfulLoads()) {
             plugin.getLogger().info("Restored inventory of '" + player.getDisplayName() + "' from database");
         }
+    }
+
+    public void cleanup() {
+
+        // Get all inventories from DB and delete them
+        Set<UUID> storedHolders = TDatabaseInventory.getStoredHolders();
+
+        storedHolders.forEach(holder -> {
+            List<TDatabaseInventory> inventories = TDatabaseInventory.getInventoriesOrderedByDate(holder);
+            if(inventories.size() < plugin.getPluginConfig().getPlayerInventoryBackupCount()) {
+                return;
+            }
+
+            int count = 0;
+            for(TDatabaseInventory inventory : inventories) {
+                count++;
+
+                if(count > plugin.getPluginConfig().getPlayerInventoryBackupCount()) {
+                    inventory.delete();
+                }
+            }
+        });
     }
 
     private class PeriodicSaveTask implements Runnable {
