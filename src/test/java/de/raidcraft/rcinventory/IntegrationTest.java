@@ -3,8 +3,12 @@ package de.raidcraft.rcinventory;
 import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
 import de.raidcraft.rcinventory.database.TDatabaseInventory;
+import io.ebean.Model;
 import org.bukkit.entity.Player;
 import org.junit.jupiter.api.*;
+
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class IntegrationTest {
@@ -31,14 +35,19 @@ public class IntegrationTest {
 
         @BeforeEach
         void setUp() {
-            TDatabaseInventory.find.all().forEach(entry -> entry.delete());
+
         }
 
         @Test
         @DisplayName("save-inventory")
         void storeInventory() {
 
+
+
             Player player = server.addPlayer();
+
+            // Delete all entries
+            TDatabaseInventory.find.all().forEach(Model::delete);
 
             // Database must be empty
             assertThat(TDatabaseInventory.find.query().findCount() == 0).isTrue();

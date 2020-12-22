@@ -1,6 +1,7 @@
 package de.raidcraft.rcinventory.listener;
 
 import de.raidcraft.rcinventory.RCInventory;
+import de.raidcraft.rcinventory.util.SchedulerUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -41,7 +42,7 @@ public class PlayerJoinListener implements Listener, Runnable {
         restoreCache.put(event.getPlayer().getUniqueId(), System.currentTimeMillis());
         DelayedPlayerRestoreTask task = new DelayedPlayerRestoreTask(event.getPlayer());
         Bukkit.getScheduler().runTaskLater(plugin, task,
-                plugin.getPluginConfig().getRestoreDelayMs() / 50 /* Ms per tick */);
+                SchedulerUtil.msInTicks(plugin.getPluginConfig().getRestoreDelayMs()));
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

@@ -19,6 +19,12 @@ public class PluginConfig extends BukkitYamlConfiguration {
     private int restoreDelayMs = 500;
     @Comment("Writes a chat message to player after inventory was restored")
     private boolean restoreMessage = true;
+    @Comment("Interval in minutes to save player inventories periodically. 0 = disabled")
+    private int saveIntervalMin = 5;
+    @Comment("Enable console messages about skipped inventory save events")
+    private boolean logSkippedSaves = true;
+    @Comment("Enable console messages about successfull inventory load events")
+    private boolean logSuccessfulLoads = true;
 
     public PluginConfig(Path path) {
 

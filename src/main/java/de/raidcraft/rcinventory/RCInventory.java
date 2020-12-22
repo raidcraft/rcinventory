@@ -75,10 +75,7 @@ public class RCInventory extends JavaPlugin {
     @Override
     public void onDisable() {
 
-        // Save all player inventories here
-        for(Player player : Bukkit.getOnlinePlayers()) {
-            inventoryManager.savePlayerInventory(player);
-        }
+        inventoryManager.saveAllPlayersInventories();
     }
 
     private void loadConfig() {
