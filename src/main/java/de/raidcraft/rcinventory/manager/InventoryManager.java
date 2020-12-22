@@ -84,13 +84,11 @@ public class InventoryManager {
         if(worldConfig != null) {
             // If world config was found we only look
             // for saved inventories on partner worlds
-            Set<String> acceptedWorlds = new HashSet<>(worldConfig.getPartnerWorlds());
-            acceptedWorlds.add(currentWorld);
-            databaseInventory = TDatabaseInventory.getLatest(player.getUniqueId(), acceptedWorlds);
+            databaseInventory = TDatabaseInventory.getLatest(player.getUniqueId(), worldConfig.getPartnerWorlds());
         } else
         {
             // Create default world config
-            worldConfig = new PluginConfig.WorldConfig(currentWorld);
+            worldConfig = new PluginConfig.WorldConfig();
             // If there is no world config we accept any saved inventory
             databaseInventory = TDatabaseInventory.getLatest(player.getUniqueId());
         }

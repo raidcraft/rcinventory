@@ -47,8 +47,7 @@ public class PluginConfig extends BukkitYamlConfiguration {
         List<String> partnerWorlds = new ArrayList<>();
         partnerWorlds.add("mining");
         partnerWorlds.add("lobby");
-        worlds.put("world", new WorldConfig("world", partnerWorlds,
-                true, true, true, true));
+        worlds.put("world", new WorldConfig());
 
         return worlds;
     }
@@ -56,7 +55,7 @@ public class PluginConfig extends BukkitYamlConfiguration {
     public WorldConfig getWorldConfig(String world) {
 
         for(Map.Entry<String, WorldConfig> entry : worlds.entrySet()) {
-            if(entry.getValue().getWorldName().equals(world)) {
+            if(entry.getValue().getPartnerWorlds().contains(world)) {
                 return entry.getValue();
             }
         }
@@ -80,8 +79,6 @@ public class PluginConfig extends BukkitYamlConfiguration {
     @Setter
     public static class WorldConfig {
 
-        @Comment("Name of the server world")
-        private String worldName;
         @Comment("List of connected worlds")
         private List<String> partnerWorlds = new ArrayList<>();
         @Comment("Sync players inventory and armor")
@@ -93,13 +90,12 @@ public class PluginConfig extends BukkitYamlConfiguration {
         @Comment("Sync players Exp")
         private boolean syncExp;
 
-        private WorldConfig() {
-            this("", new ArrayList<>(), true, true, true, true);
+        public WorldConfig() {
+            this(null, true, true, true, true);
         }
 
-        public WorldConfig(String worldName, List<String> partnerWorlds, boolean syncInventory,
+        public WorldConfig(List<String> partnerWorlds, boolean syncInventory,
                            boolean syncHealth, boolean syncSaturation, boolean syncExp) {
-            this.worldName = worldName;
             if(partnerWorlds != null) {
                 this.partnerWorlds.addAll(partnerWorlds);
             }
@@ -107,10 +103,6 @@ public class PluginConfig extends BukkitYamlConfiguration {
             this.syncHealth = syncHealth;
             this.syncSaturation = syncSaturation;
             this.syncExp = syncExp;
-        }
-
-        public WorldConfig(String worldName) {
-            this(worldName, null, true, true, true, true);
         }
 
         public void addPartnerWorld(String partnerWorld) {

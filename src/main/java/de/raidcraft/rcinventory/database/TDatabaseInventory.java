@@ -3,7 +3,6 @@ package de.raidcraft.rcinventory.database;
 import de.raidcraft.rcinventory.holder.SimpleHolder;
 import de.raidcraft.rcinventory.inventory.Base64Inventory;
 import de.raidcraft.rcinventory.inventory.Inventory;
-import io.ebean.Expr;
 import io.ebean.Finder;
 import lombok.Getter;
 import lombok.Setter;
@@ -78,7 +77,7 @@ public class TDatabaseInventory extends BaseEntity {
         return databaseInventories.get(0);
     }
 
-    public static TDatabaseInventory getLatest(UUID holderId, Set<String> worlds) {
+    public static TDatabaseInventory getLatest(UUID holderId, List<String> worlds) {
         List<TDatabaseInventory> databaseInventories =
                 find.query().where().eq("holder_id", holderId).in("world", worlds)
                         .orderBy().desc("creation_millis")

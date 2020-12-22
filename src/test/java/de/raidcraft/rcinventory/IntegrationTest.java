@@ -153,9 +153,10 @@ public class IntegrationTest {
             // Check if added
             assertThat(TDatabaseInventory.find.query().findCount() == 1).isTrue();
 
-            // Add world configuration for event world
-            PluginConfig.WorldConfig eventWorldConfig = new PluginConfig.WorldConfig("event");
-            plugin.getPluginConfig().getWorlds().put("event", eventWorldConfig);
+            // Add world configuration but without mining world
+            PluginConfig.WorldConfig eventWorldConfig = new PluginConfig.WorldConfig();
+            eventWorldConfig.addPartnerWorld("event");
+            plugin.getPluginConfig().getWorlds().put("test", eventWorldConfig);
 
             // Teleport player to event world and try to restore
             player.teleport(eventWorld.getSpawnLocation());
