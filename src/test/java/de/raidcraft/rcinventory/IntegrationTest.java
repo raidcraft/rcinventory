@@ -2,8 +2,10 @@ package de.raidcraft.rcinventory;
 
 import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
+import be.seeseemelk.mockbukkit.WorldMock;
 import de.raidcraft.rcinventory.database.TDatabaseInventory;
 import io.ebean.Model;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.h2.expression.function.ToDateParser;
 import org.junit.jupiter.api.*;
@@ -38,6 +40,8 @@ public class IntegrationTest {
         @BeforeEach
         void setUp() {
 
+            // Delete all entries
+            TDatabaseInventory.find.all().forEach(Model::delete);
         }
 
         @Test
@@ -46,13 +50,10 @@ public class IntegrationTest {
 
             Player player = server.addPlayer();
 
-            // Delete all entries
-            TDatabaseInventory.find.all().forEach(Model::delete);
-
             // Database must be empty
             assertThat(TDatabaseInventory.find.query().findCount() == 0).isTrue();
 
-            // Add inventory
+            // Add player inventory
             plugin.getInventoryManager().savePlayerInventory(player);
 
             // Check if added
@@ -87,9 +88,6 @@ public class IntegrationTest {
                 players.add(server.addPlayer());
             }
 
-            // Delete all entries
-            TDatabaseInventory.find.all().forEach(Model::delete);
-
             // Database must be empty
             assertThat(TDatabaseInventory.find.query().findCount() == 0).isTrue();
 
@@ -108,7 +106,7 @@ public class IntegrationTest {
                 }
             });
 
-            // All entries must be saved
+            // All new entries must be saved
             assertThat(TDatabaseInventory.find.query().findCount() == players.size() * inventorySaveCount)
                     .isTrue();
 
@@ -125,8 +123,56 @@ public class IntegrationTest {
             // Make sure that only the oldest entries where deleted
             List<TDatabaseInventory> allInventories = TDatabaseInventory.find.all();
             allInventories.forEach(inventory -> {
-                assertThat(inventory.getLevel() < inventorySaveCount).isTrue();
+                assertThat(inventory.getLevel() >= backupCount).isTrue();
             });
+        }
+
+        @Test
+        @DisplayName("world-config-partner-worlds")
+        void partnerWorlds() {
+
+            // Add worlds
+            WorldMock miningWorld = new WorldMock();
+            miningWorld.setName("mining");
+            server.addWorld(miningWorld);
+            WorldMock eventWorld = new WorldMock();
+            eventWorld.setName("event");
+            server.addWorld(eventWorld);
+
+            // Add player to mining world
+            Player player = server.addPlayer();
+
+            // Database must be empty
+            assertThat(TDatabaseInventory.find.query().findCount() == 0).isTrue();
+
+            // Add player inventory (at mining world)
+            player.teleport(miningWorld.getSpawnLocation());
+            player.setSaturation(1.23F);
+            plugin.getInventoryManager().savePlayerInventory(player);
+
+            // Check if added
+            assertThat(TDatabaseInventory.find.query().findCount() == 1).isTrue();
+
+            // Add world configuration for event world
+            PluginConfig.WorldConfig eventWorldConfig = new PluginConfig.WorldConfig("event");
+            plugin.getPluginConfig().getWorlds().put("event", eventWorldConfig);
+
+            // Teleport player to event world and try to restore
+            player.teleport(eventWorld.getSpawnLocation());
+            player.setSaturation(9.87F);
+            plugin.getInventoryManager().restorePlayerInventory(player);
+
+            // Saturation must still be 9.87
+            assertThat(player.getSaturation() == 9.87F).isTrue();
+
+            // Change world config to add mining world as partner world
+            eventWorldConfig.addPartnerWorld("mining");
+
+            // Restore inventory again
+            plugin.getInventoryManager().restorePlayerInventory(player);
+
+            // Saturation must now match the saved inventory saturation
+            assertThat(player.getSaturation() == 1.23F).isTrue();
         }
     }
 

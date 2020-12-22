@@ -2,16 +2,26 @@ package de.raidcraft.rcinventory;
 
 import de.exlll.configlib.annotation.Comment;
 import de.exlll.configlib.annotation.ConfigurationElement;
+import de.exlll.configlib.annotation.ElementType;
 import de.exlll.configlib.configs.yaml.BukkitYamlConfiguration;
 import de.exlll.configlib.format.FieldNameFormatters;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
 public class PluginConfig extends BukkitYamlConfiguration {
+
+    public PluginConfig(Path path) {
+
+        super(path, BukkitYamlProperties.builder().setFormatter(FieldNameFormatters.LOWER_UNDERSCORE).build());
+    }
 
     private DatabaseConfig database = new DatabaseConfig();
     @Comment("Delay in milliseconds between player login and inventory restore." +
@@ -28,9 +38,30 @@ public class PluginConfig extends BukkitYamlConfiguration {
     @Comment("Number of how many inventory backups are kept per player")
     private int playerInventoryBackupCount = 10;
 
-    public PluginConfig(Path path) {
+    @ElementType(WorldConfig.class)
+    @Comment("World specific configuration")
+    private Map<String, WorldConfig> worlds = initWorldConfig();
 
-        super(path, BukkitYamlProperties.builder().setFormatter(FieldNameFormatters.LOWER_UNDERSCORE).build());
+    private Map<String, WorldConfig> initWorldConfig() {
+        Map<String, WorldConfig> worlds = new HashMap<>();
+        List<String> partnerWorlds = new ArrayList<>();
+        partnerWorlds.add("mining");
+        partnerWorlds.add("lobby");
+        worlds.put("world", new WorldConfig("world", partnerWorlds,
+                true, true, true, true));
+
+        return worlds;
+    }
+
+    public WorldConfig getWorldConfig(String world) {
+
+        for(Map.Entry<String, WorldConfig> entry : worlds.entrySet()) {
+            if(entry.getValue().getWorldName().equals(world)) {
+                return entry.getValue();
+            }
+        }
+
+        return null;
     }
 
     @ConfigurationElement
@@ -42,5 +73,48 @@ public class PluginConfig extends BukkitYamlConfiguration {
         private String password = "sa";
         private String driver = "h2";
         private String url = "jdbc:h2:~/inventory.db";
+    }
+
+    @ConfigurationElement
+    @Getter
+    @Setter
+    public static class WorldConfig {
+
+        @Comment("Name of the server world")
+        private String worldName;
+        @Comment("List of connected worlds")
+        private List<String> partnerWorlds = new ArrayList<>();
+        @Comment("Sync players inventory and armor")
+        private boolean syncInventory;
+        @Comment("Sync players health")
+        private boolean syncHealth;
+        @Comment("Sync players saturation")
+        private boolean syncSaturation;
+        @Comment("Sync players Exp")
+        private boolean syncExp;
+
+        private WorldConfig() {
+            this("", new ArrayList<>(), true, true, true, true);
+        }
+
+        public WorldConfig(String worldName, List<String> partnerWorlds, boolean syncInventory,
+                           boolean syncHealth, boolean syncSaturation, boolean syncExp) {
+            this.worldName = worldName;
+            if(partnerWorlds != null) {
+                this.partnerWorlds.addAll(partnerWorlds);
+            }
+            this.syncInventory = syncInventory;
+            this.syncHealth = syncHealth;
+            this.syncSaturation = syncSaturation;
+            this.syncExp = syncExp;
+        }
+
+        public WorldConfig(String worldName) {
+            this(worldName, null, true, true, true, true);
+        }
+
+        public void addPartnerWorld(String partnerWorld) {
+            partnerWorlds.add(partnerWorld);
+        }
     }
 }

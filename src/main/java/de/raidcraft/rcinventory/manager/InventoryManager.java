@@ -1,6 +1,7 @@
 package de.raidcraft.rcinventory.manager;
 
 import de.raidcraft.rcinventory.Messages;
+import de.raidcraft.rcinventory.PluginConfig;
 import de.raidcraft.rcinventory.RCInventory;
 import de.raidcraft.rcinventory.holder.InventoryHolder;
 import de.raidcraft.rcinventory.holder.PlayerHolder;
@@ -76,7 +77,24 @@ public class InventoryManager {
 
     public void restorePlayerInventory(Player player) {
 
-        TDatabaseInventory databaseInventory = TDatabaseInventory.getLatest(player.getUniqueId());
+        // Check if there is a world configuration for current players location
+        String currentWorld = player.getLocation().getWorld().getName();
+        PluginConfig.WorldConfig worldConfig = plugin.getPluginConfig().getWorldConfig(currentWorld);
+        TDatabaseInventory databaseInventory;
+        if(worldConfig != null) {
+            // If world config was found we only look
+            // for saved inventories on partner worlds
+            Set<String> acceptedWorlds = new HashSet<>(worldConfig.getPartnerWorlds());
+            acceptedWorlds.add(currentWorld);
+            databaseInventory = TDatabaseInventory.getLatest(player.getUniqueId(), acceptedWorlds);
+        } else
+        {
+            // Create default world config
+            worldConfig = new PluginConfig.WorldConfig(currentWorld);
+            // If there is no world config we accept any saved inventory
+            databaseInventory = TDatabaseInventory.getLatest(player.getUniqueId());
+        }
+
         if(databaseInventory == null) {
             plugin.getLogger().info("No inventory to restore found for '" + player.getDisplayName() + "'");
             return;
@@ -92,12 +110,20 @@ public class InventoryManager {
 
         // Restore everything
         //-------------------
-        player.getInventory().setContents(inventory.getContents());
-        player.setSaturation(inventory.getHolder().getSaturation());
-        player.setLevel(inventory.getHolder().getLevel());
-        player.setExp(inventory.getHolder().getExp());
-        if(inventory.getHolder().getHealth() > 0) {
-            player.setHealth(inventory.getHolder().getHealth());
+        if(worldConfig.isSyncInventory()) {
+            player.getInventory().setContents(inventory.getContents());
+        }
+        if(worldConfig.isSyncSaturation()) {
+            player.setSaturation(inventory.getHolder().getSaturation());
+        }
+        if(worldConfig.isSyncExp()) {
+            player.setLevel(inventory.getHolder().getLevel());
+            player.setExp(inventory.getHolder().getExp());
+        }
+        if(worldConfig.isSyncHealth()) {
+            if (inventory.getHolder().getHealth() > 0) {
+                player.setHealth(inventory.getHolder().getHealth());
+            }
         }
         if(plugin.getPluginConfig().isRestoreMessage()) {
             Messages.send(player, Messages.inventoryRestored(player, inventory));
@@ -135,6 +161,11 @@ public class InventoryManager {
 
         @Override
         public void run() {
+
+            // Disabled if configured interval is zero
+            if(plugin.getPluginConfig().getSaveIntervalMin() == 0) {
+                return;
+            }
 
             Bukkit.getOnlinePlayers().forEach(player -> {
 
