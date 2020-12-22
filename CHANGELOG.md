@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/raidcraft/rcinventory/compare/v1.2.0...v1.3.0) (2020-12-22)
+
+
+### Features
+
+* Implement database cleanup. Fixes [#10](https://github.com/raidcraft/rcinventory/issues/10). ([1ae9989](https://github.com/raidcraft/rcinventory/commit/1ae99896e811fab8f79a82b3d68c583d926df911))
+
 # [1.2.0](https://github.com/raidcraft/rcinventory/compare/v1.1.1...v1.2.0) (2020-12-22)
 
 
