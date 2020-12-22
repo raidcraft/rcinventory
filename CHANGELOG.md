@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/raidcraft/rcinventory/compare/v1.3.0...v1.4.0) (2020-12-22)
+
+
+### Features
+
+* Adding world configs to prevent sync between specific worlds. Closes [#8](https://github.com/raidcraft/rcinventory/issues/8) ([c4294c6](https://github.com/raidcraft/rcinventory/commit/c4294c6f6aebed0c44ca91d3ba19e46ebd779f50))
+
 # [1.3.0](https://github.com/raidcraft/rcinventory/compare/v1.2.0...v1.3.0) (2020-12-22)
 
 
