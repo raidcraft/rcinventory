@@ -1,3 +1,11 @@
+## [1.1.1](https://github.com/raidcraft/rcinventory/compare/v1.1.0...v1.1.1) (2020-12-22)
+
+
+### Bug Fixes
+
+* Fix database inventory equals method ([33abfda](https://github.com/raidcraft/rcinventory/commit/33abfda71ecc7ac98d5c05202021597238175f5b))
+* Fixed equals method of database inventory to avoid duplicate entries ([b5383a1](https://github.com/raidcraft/rcinventory/commit/b5383a1f168615e1a1ab8b556f610cecda94112d))
+
 # [1.1.0](https://github.com/raidcraft/rcinventory/compare/v1.0.0...v1.1.0) (2020-12-21)
 
 
