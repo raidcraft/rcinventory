@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/raidcraft/rcinventory/compare/v1.4.0...v1.4.1) (2020-12-22)
+
+
+### Bug Fixes
+
+* Fixes world configuration to easily create world groups ([341b1a1](https://github.com/raidcraft/rcinventory/commit/341b1a192a9e0f783bab56f15cc9584ced19636a))
+
 # [1.4.0](https://github.com/raidcraft/rcinventory/compare/v1.3.0...v1.4.0) (2020-12-22)
 
 
