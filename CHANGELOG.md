@@ -1,3 +1,10 @@
+## [1.4.2](https://github.com/raidcraft/rcinventory/compare/v1.4.1...v1.4.2) (2020-12-23)
+
+
+### Bug Fixes
+
+* Fix cleanup by keeping backups per world ([d195ccc](https://github.com/raidcraft/rcinventory/commit/d195ccc3e5a03bcda1b9d8a95e570b88c18aad06))
+
 ## [1.4.1](https://github.com/raidcraft/rcinventory/compare/v1.4.0...v1.4.1) (2020-12-22)
 
 
