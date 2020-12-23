@@ -9,6 +9,7 @@ import de.raidcraft.rcinventory.inventory.Base64Inventory;
 import de.raidcraft.rcinventory.inventory.Inventory;
 import de.raidcraft.rcinventory.database.TDatabaseInventory;
 import de.raidcraft.rcinventory.util.SchedulerUtil;
+import io.ebean.annotation.Transactional;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -131,6 +132,7 @@ public class InventoryManager {
         }
     }
 
+    @Transactional
     public void cleanup() {
 
         // Get all inventories from DB and delete them
@@ -142,11 +144,15 @@ public class InventoryManager {
                 return;
             }
 
-            int count = 0;
+            Map<String, Integer> worldCount = new HashMap<>();
             for(TDatabaseInventory inventory : inventories) {
-                count++;
+                if(!worldCount.containsKey(inventory.getWorld())) {
+                    worldCount.put(inventory.getWorld(), 0);
+                }
 
-                if(count > plugin.getPluginConfig().getPlayerInventoryBackupCount()) {
+                worldCount.put(inventory.getWorld(), worldCount.get(inventory.getWorld()) + 1);
+
+                if(worldCount.get(inventory.getWorld()) > plugin.getPluginConfig().getPlayerInventoryBackupCount()) {
                     inventory.delete();
                 }
             }

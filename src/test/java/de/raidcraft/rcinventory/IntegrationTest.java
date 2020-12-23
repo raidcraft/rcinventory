@@ -82,6 +82,14 @@ public class IntegrationTest {
             final int backupCount = 5;
             final int inventorySaveCount = 10;
 
+            // Add worlds
+            WorldMock miningWorld = new WorldMock();
+            miningWorld.setName("mining");
+            server.addWorld(miningWorld);
+            WorldMock eventWorld = new WorldMock();
+            eventWorld.setName("event");
+            server.addWorld(eventWorld);
+
             // Add some players
             List<Player> players = new ArrayList<>();
             for(int i = 0; i < playerCount; i++) {
@@ -91,9 +99,28 @@ public class IntegrationTest {
             // Database must be empty
             assertThat(TDatabaseInventory.find.query().findCount() == 0).isTrue();
 
+            // Mining world:
             // Save inventories for player 10 times by changing level each time
             players.forEach(player -> {
                 for(int i = 0; i < inventorySaveCount; i++) {
+                    player.teleport(miningWorld.getSpawnLocation());
+                    player.setLevel(i);
+                    plugin.getInventoryManager().savePlayerInventory(player);
+
+                    // Sleep to make sure the millisecond count of each entry differs
+                    try {
+                        Thread.sleep(1);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+            // Event world:
+            // Save inventories for player 10 times by changing level each time
+            players.forEach(player -> {
+                for(int i = 0; i < inventorySaveCount; i++) {
+                    player.teleport(eventWorld.getSpawnLocation());
                     player.setLevel(i);
                     plugin.getInventoryManager().savePlayerInventory(player);
 
@@ -107,7 +134,7 @@ public class IntegrationTest {
             });
 
             // All new entries must be saved
-            assertThat(TDatabaseInventory.find.query().findCount() == players.size() * inventorySaveCount)
+            assertThat(TDatabaseInventory.find.query().findCount() == 2 * players.size() * inventorySaveCount)
                     .isTrue();
 
             // Set backup size to 5 inventories per player
@@ -117,7 +144,7 @@ public class IntegrationTest {
             plugin.getInventoryManager().cleanup();
 
             // Check if database entries was cleared
-            assertThat(TDatabaseInventory.find.query().findCount() == players.size() * backupCount)
+            assertThat(TDatabaseInventory.find.query().findCount() == 2 * players.size() * backupCount)
                     .isTrue();
 
             // Make sure that only the oldest entries where deleted
