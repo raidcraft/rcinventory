@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/raidcraft/rcinventory/compare/v1.4.2...v1.5.0) (2020-12-27)
+
+
+### Features
+
+* Added synchronization of players ender chest. Closes [#13](https://github.com/raidcraft/rcinventory/issues/13). ([650b0c8](https://github.com/raidcraft/rcinventory/commit/650b0c85b5894b9b9df4bb812c74d55feb5cf6b9))
+
 ## [1.4.2](https://github.com/raidcraft/rcinventory/compare/v1.4.1...v1.4.2) (2020-12-23)
 
 
