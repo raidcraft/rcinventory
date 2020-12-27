@@ -19,5 +19,7 @@ public interface InventoryHolder {
 
     double getHealth();
 
-    ItemStack[] getContents();
+    ItemStack[] getPlayerInventoryContents();
+
+    ItemStack[] getEnderChestContents();
 }

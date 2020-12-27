@@ -27,6 +27,9 @@ public class TDatabaseInventory extends BaseEntity {
     @Lob
     @Basic(fetch= FetchType.EAGER)
     private String serializedInventory;
+    @Lob
+    @Basic(fetch= FetchType.EAGER)
+    private String serializedEnderChest;
     private Float saturation;
     private Float exp;
     private int level;
@@ -38,6 +41,7 @@ public class TDatabaseInventory extends BaseEntity {
 
         this.holderId = inventory.getHolder().getUniqueId();
         this.serializedInventory = inventory.serialize();
+        this.serializedEnderChest = inventory.enderChestSerialize();
         this.saturation = inventory.getHolder().getSaturation();
         this.exp = inventory.getHolder().getExp();
         this.level = inventory.getHolder().getLevel();
@@ -54,7 +58,7 @@ public class TDatabaseInventory extends BaseEntity {
         if(health == null) health = 0D;
 
         SimpleHolder simpleHolder = new SimpleHolder(holderId, world, exp, level, saturation, health);
-        return new Base64Inventory(simpleHolder, serializedInventory, creationMillis);
+        return new Base64Inventory(simpleHolder, serializedInventory, serializedEnderChest, creationMillis);
     }
 
     public static TDatabaseInventory getLatest(UUID holderId) {
@@ -111,6 +115,7 @@ public class TDatabaseInventory extends BaseEntity {
 
         if(!holderId.equals(other.getHolderId())) return false;
         if(!serializedInventory.equals(other.getSerializedInventory())) return false;
+        if(!serializedEnderChest.equals(other.getSerializedEnderChest())) return false;
         if(!saturation.equals(other.getSaturation())) return false;
         if(!health.equals(other.getHealth())) return false;
         if(level != other.getLevel()) return false;

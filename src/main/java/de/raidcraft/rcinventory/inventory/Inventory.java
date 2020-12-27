@@ -9,9 +9,13 @@ public interface Inventory {
 
     InventoryHolder getHolder();
 
-    ItemStack[] getContents();
+    ItemStack[] getPlayerInventoryContents();
+
+    ItemStack[] getEnderChestContents();
 
     String getWorld();
 
     String serialize();
+
+    String enderChestSerialize();
 }

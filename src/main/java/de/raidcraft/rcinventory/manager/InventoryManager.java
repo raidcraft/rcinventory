@@ -3,7 +3,6 @@ package de.raidcraft.rcinventory.manager;
 import de.raidcraft.rcinventory.Messages;
 import de.raidcraft.rcinventory.PluginConfig;
 import de.raidcraft.rcinventory.RCInventory;
-import de.raidcraft.rcinventory.holder.InventoryHolder;
 import de.raidcraft.rcinventory.holder.PlayerHolder;
 import de.raidcraft.rcinventory.inventory.Base64Inventory;
 import de.raidcraft.rcinventory.inventory.Inventory;
@@ -11,7 +10,6 @@ import de.raidcraft.rcinventory.database.TDatabaseInventory;
 import de.raidcraft.rcinventory.util.SchedulerUtil;
 import io.ebean.annotation.Transactional;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -23,6 +21,7 @@ public class InventoryManager {
     private final static int SAVE_TASK_PROCESS_INTERVAL_MS = 60*1000;
     private RCInventory plugin;
     private BukkitTask saveTask = null;
+    private Map<UUID, Inventory> cachedInventories = new HashMap<>();
 
     public InventoryManager(RCInventory plugin) {
 
@@ -73,6 +72,7 @@ public class InventoryManager {
             return;
         }
         databaseInventory.save();
+        cachedInventories.put(player.getUniqueId(), inventory); // Update cache
         plugin.getLogger().info("Saved inventory of '" + player.getDisplayName() + "' into database");
     }
 
@@ -107,10 +107,15 @@ public class InventoryManager {
             return;
         }
 
+        cachedInventories.put(player.getUniqueId(), inventory); // Update cache
+
         // Restore everything
         //-------------------
         if(worldConfig.isSyncInventory()) {
-            player.getInventory().setContents(inventory.getContents());
+            player.getInventory().setContents(inventory.getPlayerInventoryContents());
+        }
+        if(worldConfig.isSyncEnderChest()) {
+            player.getEnderChest().setContents(inventory.getEnderChestContents());
         }
         if(worldConfig.isSyncSaturation()) {
             player.setSaturation(inventory.getHolder().getSaturation());
@@ -135,7 +140,7 @@ public class InventoryManager {
     @Transactional
     public void cleanup() {
 
-        // Get all inventories from DB and delete them
+        // Get all old inventories from DB and delete them
         Set<UUID> storedHolders = TDatabaseInventory.getStoredHolders();
 
         storedHolders.forEach(holder -> {

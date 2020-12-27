@@ -10,36 +10,48 @@ import java.io.IOException;
 @Getter
 public class Base64Inventory implements Inventory {
 
-    private InventoryHolder holder;
+    private final InventoryHolder holder;
     String world;
-    private long creationMillis;
+    private final long creationMillis;
     String serializedInventory;
-    ItemStack[] contents;
+    String serializedEnderChestInventory;
+    ItemStack[] playerInventoryContents;
+    ItemStack[] enderChestContents;
 
     public Base64Inventory(InventoryHolder holder) throws IOException {
         this.holder = holder;
         this.world = holder.getLocation().getWorld().getName();
         this.creationMillis = System.currentTimeMillis();
 
-        this.serializedInventory = BukkitSerialization.itemStackArrayToBase64(holder.getContents());
+        this.serializedInventory = BukkitSerialization.itemStackArrayToBase64(holder.getPlayerInventoryContents());
+        this.serializedEnderChestInventory = BukkitSerialization.itemStackArrayToBase64(holder.getEnderChestContents());
 
         // We will deserialize instead of copying the holders inventory
         // to make sure we got the content which was actually saved
-        contents = BukkitSerialization.itemStackArrayFromBase64(this.serializedInventory);
+        playerInventoryContents = BukkitSerialization.itemStackArrayFromBase64(this.serializedInventory);
+        enderChestContents = BukkitSerialization.itemStackArrayFromBase64(this.serializedEnderChestInventory);
     }
 
-    public Base64Inventory(InventoryHolder holder, String serialized, long creationMillis) throws IOException {
+    public Base64Inventory(InventoryHolder holder, String serializedPlayerInventory,
+                           String serializedEnderChestInventory, long creationMillis) throws IOException {
 
         this.holder = holder;
         this.creationMillis = creationMillis;
 
-        this.serializedInventory = serialized;
+        this.serializedInventory = serializedPlayerInventory;
+        this.serializedEnderChestInventory = serializedEnderChestInventory;
 
-        contents = BukkitSerialization.itemStackArrayFromBase64(this.serializedInventory);
+        playerInventoryContents = BukkitSerialization.itemStackArrayFromBase64(this.serializedInventory);
+        enderChestContents = BukkitSerialization.itemStackArrayFromBase64(this.serializedEnderChestInventory);
     }
 
     @Override
     public String serialize() {
         return serializedInventory;
+    }
+
+    @Override
+    public String enderChestSerialize() {
+        return serializedEnderChestInventory;
     }
 }

@@ -10,13 +10,14 @@ import java.util.UUID;
 @Getter
 public class SimpleHolder implements InventoryHolder {
 
-    private UUID uuid;
-    private ItemStack[] contents = null;
-    private Location location;
-    private float exp;
-    private float saturation;
-    private int level;
-    private double health;
+    private final UUID uuid;
+    private final ItemStack[] playerInventoryContents = null;
+    private final ItemStack[] enderChestContents = null;
+    private final Location location;
+    private final float exp;
+    private final float saturation;
+    private final int level;
+    private final double health;
 
     public SimpleHolder(UUID uuid, String world, float exp, int level, float saturation, double health) {
         this.uuid = uuid;

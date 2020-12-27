@@ -89,13 +89,15 @@ public class PluginConfig extends BukkitYamlConfiguration {
         private boolean syncSaturation;
         @Comment("Sync players Exp")
         private boolean syncExp;
+        @Comment("Sync players ender chest")
+        private boolean syncEnderChest;
 
         public WorldConfig() {
-            this(null, true, true, true, true);
+            this(null, true, true, true, true, true);
         }
 
         public WorldConfig(List<String> partnerWorlds, boolean syncInventory,
-                           boolean syncHealth, boolean syncSaturation, boolean syncExp) {
+                           boolean syncHealth, boolean syncSaturation, boolean syncExp, boolean syncEnderChest) {
             if(partnerWorlds != null) {
                 this.partnerWorlds.addAll(partnerWorlds);
             }
@@ -103,6 +105,7 @@ public class PluginConfig extends BukkitYamlConfiguration {
             this.syncHealth = syncHealth;
             this.syncSaturation = syncSaturation;
             this.syncExp = syncExp;
+            this.syncEnderChest = syncEnderChest;
         }
 
         public void addPartnerWorld(String partnerWorld) {
