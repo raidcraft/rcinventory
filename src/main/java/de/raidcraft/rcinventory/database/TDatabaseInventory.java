@@ -146,6 +146,7 @@ public class TDatabaseInventory extends BaseEntity {
 
         if(!holderId.equals(other.getHolderId())) return false;
         if(!serializedInventory.equals(other.getSerializedInventory())) return false;
+        if(serializedEnderChest == null) return false; // Ender chest was not synchronized in every version
         if(!serializedEnderChest.equals(other.getSerializedEnderChest())) return false;
         if(!saturation.equals(other.getSaturation())) return false;
         if(!health.equals(other.getHealth())) return false;

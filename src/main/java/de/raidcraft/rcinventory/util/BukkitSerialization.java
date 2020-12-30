@@ -54,6 +54,10 @@ public class BukkitSerialization {
             return dummyContent;
         }
 
+        if(data == null) {
+            return new ItemStack[]{};
+        }
+
         try {
             ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(data));
             BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
