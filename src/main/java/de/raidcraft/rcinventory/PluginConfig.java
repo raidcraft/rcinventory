@@ -108,6 +108,18 @@ public class PluginConfig extends BukkitYamlConfiguration {
             this.syncEnderChest = syncEnderChest;
         }
 
+        public List<String> getPartnerWorlds() {
+            List<String> fullPartnerWorlds = new ArrayList<>();
+
+            for(String partnerWorld : partnerWorlds) {
+                fullPartnerWorlds.add(partnerWorld);
+                fullPartnerWorlds.add(partnerWorld + "_nether");
+                fullPartnerWorlds.add(partnerWorld + "_the_end");
+            }
+
+            return fullPartnerWorlds;
+        }
+
         public void addPartnerWorld(String partnerWorld) {
             partnerWorlds.add(partnerWorld);
         }
