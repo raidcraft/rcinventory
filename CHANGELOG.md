@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/raidcraft/rcinventory/compare/v1.5.0...v1.6.0) (2020-12-30)
+
+
+### Features
+
+* Implement pre caching when player joins server but is not loaded into world. Database inventory is loaded and deserialized asynchronously. Closes [#16](https://github.com/raidcraft/rcinventory/issues/16) ([31a2b00](https://github.com/raidcraft/rcinventory/commit/31a2b008f72a63a555d8b8a82306aa6eccf9ca57))
+
 # [1.5.0](https://github.com/raidcraft/rcinventory/compare/v1.4.2...v1.5.0) (2020-12-27)
 
 
