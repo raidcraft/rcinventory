@@ -1,3 +1,11 @@
+# [1.7.0](https://github.com/raidcraft/rcinventory/compare/v1.6.1...v1.7.0) (2020-12-30)
+
+
+### Features
+
+* Automatically handle Nether and TheEnd world as partner world for each configured partner world ([249efe9](https://github.com/raidcraft/rcinventory/commit/249efe97b485d7612b0c1d5a6f9071b91f727692))
+* Only sync inventories with same world if no special world config was found ([a2b7c10](https://github.com/raidcraft/rcinventory/commit/a2b7c104367d8491caf28e3582e25b895b9dbbc1))
+
 ## [1.6.1](https://github.com/raidcraft/rcinventory/compare/v1.6.0...v1.6.1) (2020-12-30)
 
 
