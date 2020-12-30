@@ -22,6 +22,7 @@ public class InventoryManager {
     private RCInventory plugin;
     private BukkitTask saveTask = null;
     private Map<UUID, Inventory> cachedInventories = new HashMap<>();
+    private Map<UUID, Map<String, TDatabaseInventory>> preloadedInventories= new HashMap<>();
 
     public InventoryManager(RCInventory plugin) {
 
@@ -76,6 +77,46 @@ public class InventoryManager {
         plugin.getLogger().info("Saved inventory of '" + player.getDisplayName() + "' into database");
     }
 
+    public void preloadAllLatestPlayerInventories(String playerName, UUID playerId) {
+
+        // Initialize players cache entry
+        if(!preloadedInventories.containsKey(playerId)) {
+            preloadedInventories.put(playerId, new HashMap<>());
+        }
+
+        Set<TDatabaseInventory> databaseInventories = TDatabaseInventory.getLatestOfAllWorlds(playerId);
+        Map<String, TDatabaseInventory> preloadCache = preloadedInventories.get(playerId);
+
+        databaseInventories.forEach(entry -> {
+            // Make sure inventory deserialization is run here in async context
+            entry.getInventory();
+            preloadCache.put(entry.getWorld(), entry);
+        });
+    }
+
+    private TDatabaseInventory getLatestPrecachedInventory(UUID playerId, List<String> allowedWorlds) {
+
+        if(!preloadedInventories.containsKey(playerId)) {
+            return null;
+        }
+
+        TDatabaseInventory foundInventory = null;
+        Map<String, TDatabaseInventory> preloadCache = preloadedInventories.get(playerId);
+
+        // Search for newest entry part of partner worlds
+        for(Map.Entry<String, TDatabaseInventory> entry : preloadCache.entrySet()) {
+            if(allowedWorlds != null && !allowedWorlds.contains(entry.getKey())) {
+                continue;
+            }
+
+            if(foundInventory == null || foundInventory.getCreationMillis() < entry.getValue().getCreationMillis()) {
+                foundInventory = entry.getValue();
+            }
+        }
+
+        return foundInventory;
+    }
+
     public void restorePlayerInventory(Player player) {
 
         // Check if there is a world configuration for current players location
@@ -85,27 +126,34 @@ public class InventoryManager {
         if(worldConfig != null) {
             // If world config was found we only look
             // for saved inventories on partner worlds
-            databaseInventory = TDatabaseInventory.getLatest(player.getUniqueId(), worldConfig.getPartnerWorlds());
+
+            // Check preload cache
+            if(preloadedInventories.containsKey(player.getUniqueId())) {
+                databaseInventory = getLatestPrecachedInventory(player.getUniqueId(), worldConfig.getPartnerWorlds());
+            } else {
+                databaseInventory = TDatabaseInventory.getLatest(player.getUniqueId(), worldConfig.getPartnerWorlds());
+            }
         } else
         {
             // Create default world config
             worldConfig = new PluginConfig.WorldConfig();
             // If there is no world config we accept any saved inventory
-            databaseInventory = TDatabaseInventory.getLatest(player.getUniqueId());
+            if(preloadedInventories.containsKey(player.getUniqueId())) {
+                databaseInventory = getLatestPrecachedInventory(player.getUniqueId(), null);
+            } else {
+                databaseInventory = TDatabaseInventory.getLatest(player.getUniqueId());
+            }
         }
+
+        // Cleanup preload cache
+        preloadedInventories.remove(player.getUniqueId());
 
         if(databaseInventory == null) {
             plugin.getLogger().info("No inventory to restore found for '" + player.getDisplayName() + "'");
             return;
         }
 
-        Inventory inventory;
-        try {
-            inventory = databaseInventory.asInventory();
-        } catch (IOException e) {
-            plugin.getLogger().warning("Failed to deserialize '" + player.getDisplayName() + "' inventory");
-            return;
-        }
+        Inventory inventory = databaseInventory.getInventory();
 
         cachedInventories.put(player.getUniqueId(), inventory); // Update cache
 
@@ -135,6 +183,11 @@ public class InventoryManager {
         if(plugin.getPluginConfig().isLogSuccessfulLoads()) {
             plugin.getLogger().info("Restored inventory of '" + player.getDisplayName() + "' from database");
         }
+    }
+
+    public void removeFromCache(UUID playerId) {
+
+        cachedInventories.remove(playerId);
     }
 
     @Transactional

@@ -19,11 +19,13 @@ public class PlayerLeaveListener implements Listener {
     public void onPlayerLeft(PlayerQuitEvent event) {
 
         plugin.getInventoryManager().savePlayerInventory(event.getPlayer());
+        plugin.getInventoryManager().removeFromCache(event.getPlayer().getUniqueId());
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerKicked(PlayerKickEvent event) {
 
         plugin.getInventoryManager().savePlayerInventory(event.getPlayer());
+        plugin.getInventoryManager().removeFromCache(event.getPlayer().getUniqueId());
     }
 }

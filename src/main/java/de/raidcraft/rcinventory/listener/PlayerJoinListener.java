@@ -8,10 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerKickEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +29,13 @@ public class PlayerJoinListener implements Listener, Runnable {
         // circumstances in restore map.
         // These players are immortal otherwise.
         Bukkit.getScheduler().runTaskTimer(plugin, this, 20, 10);
+    }
+
+    @EventHandler
+    public void onPlayerAsyncPreJoin(AsyncPlayerPreLoginEvent event) {
+
+        plugin.getInventoryManager().preloadAllLatestPlayerInventories(
+                event.getPlayerProfile().getName(), event.getPlayerProfile().getId());
     }
 
     @EventHandler(priority = EventPriority.LOWEST)

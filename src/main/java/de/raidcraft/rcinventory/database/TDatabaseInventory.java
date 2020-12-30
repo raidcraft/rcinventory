@@ -1,9 +1,11 @@
 package de.raidcraft.rcinventory.database;
 
+import de.raidcraft.rcinventory.RCInventory;
 import de.raidcraft.rcinventory.holder.SimpleHolder;
 import de.raidcraft.rcinventory.inventory.Base64Inventory;
 import de.raidcraft.rcinventory.inventory.Inventory;
 import io.ebean.Finder;
+import io.ebean.annotation.Transactional;
 import lombok.Getter;
 import lombok.Setter;
 import net.silthus.ebean.BaseEntity;
@@ -36,6 +38,21 @@ public class TDatabaseInventory extends BaseEntity {
     private long creationMillis;
     private String world;
     private Double health;
+    @Transient
+    Inventory inventory;
+
+    public Inventory getInventory() {
+        if(inventory == null) {
+            try {
+                this.inventory = asInventory();
+            } catch (IOException e) {
+                RCInventory.instance().getLogger().warning("Failed to deserialize '" +
+                        holderId.toString() + "' inventory");
+            }
+        }
+
+        return inventory;
+    }
 
     public TDatabaseInventory(Inventory inventory) {
 
@@ -48,9 +65,10 @@ public class TDatabaseInventory extends BaseEntity {
         this.creationMillis = inventory.getCreationMillis();
         this.world = inventory.getWorld();
         this.health = inventory.getHolder().getHealth();
+        this.inventory = inventory;
     }
 
-    public Base64Inventory asInventory() throws IOException {
+    private Base64Inventory asInventory() throws IOException {
 
         if(world == null) world = "";
         if(saturation == null) saturation = 0F;
@@ -89,6 +107,19 @@ public class TDatabaseInventory extends BaseEntity {
         if(databaseInventories.size() < 1) return null;
 
         return databaseInventories.get(0);
+    }
+
+    @Transactional
+    public static Set<TDatabaseInventory> getLatestOfAllWorlds(UUID holderId) {
+
+        Set<TDatabaseInventory> distinctInventories =
+                find.query().where().eq("holder_id", holderId).select("world").setDistinct(true)
+                        .orderBy().desc("creation_millis").findSet();
+        Set<TDatabaseInventory> latest = new HashSet<>();
+        for(TDatabaseInventory entry : distinctInventories) {
+            latest.add(getLatest(holderId, entry.getWorld()));
+        }
+        return latest;
     }
 
     public static List<TDatabaseInventory> getInventoriesOrderedByDate(UUID holderId) {
