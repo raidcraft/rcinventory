@@ -119,30 +119,23 @@ public class InventoryManager {
 
     public void restorePlayerInventory(Player player) {
 
+        TDatabaseInventory databaseInventory;
         // Check if there is a world configuration for current players location
         String currentWorld = player.getLocation().getWorld().getName();
         PluginConfig.WorldConfig worldConfig = plugin.getPluginConfig().getWorldConfig(currentWorld);
-        TDatabaseInventory databaseInventory;
-        if(worldConfig != null) {
-            // If world config was found we only look
-            // for saved inventories on partner worlds
-
-            // Check preload cache
-            if(preloadedInventories.containsKey(player.getUniqueId())) {
-                databaseInventory = getLatestPrecachedInventory(player.getUniqueId(), worldConfig.getPartnerWorlds());
-            } else {
-                databaseInventory = TDatabaseInventory.getLatest(player.getUniqueId(), worldConfig.getPartnerWorlds());
-            }
-        } else
-        {
+        if(worldConfig == null) {
             // Create default world config
             worldConfig = new PluginConfig.WorldConfig();
-            // If there is no world config we accept any saved inventory
-            if(preloadedInventories.containsKey(player.getUniqueId())) {
-                databaseInventory = getLatestPrecachedInventory(player.getUniqueId(), null);
-            } else {
-                databaseInventory = TDatabaseInventory.getLatest(player.getUniqueId());
-            }
+            worldConfig.addPartnerWorld(player.getWorld().getName());
+        }
+
+        // We only look for saved inventories on partner worlds
+
+        // Check preload cache
+        if(preloadedInventories.containsKey(player.getUniqueId())) {
+            databaseInventory = getLatestPrecachedInventory(player.getUniqueId(), worldConfig.getPartnerWorlds());
+        } else {
+            databaseInventory = TDatabaseInventory.getLatest(player.getUniqueId(), worldConfig.getPartnerWorlds());
         }
 
         // Cleanup preload cache
