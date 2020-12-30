@@ -1,3 +1,10 @@
+## [1.6.1](https://github.com/raidcraft/rcinventory/compare/v1.6.0...v1.6.1) (2020-12-30)
+
+
+### Bug Fixes
+
+* Fix some NPEs ([7cf53e9](https://github.com/raidcraft/rcinventory/commit/7cf53e9dec3a3f776de3ae8660c61c10b0f900d2))
+
 # [1.6.0](https://github.com/raidcraft/rcinventory/compare/v1.5.0...v1.6.0) (2020-12-30)
 
 
