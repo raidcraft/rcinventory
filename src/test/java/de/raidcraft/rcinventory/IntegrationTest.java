@@ -202,6 +202,41 @@ public class IntegrationTest {
         }
 
         @Test
+        @DisplayName("world-config-no-partner-worlds")
+        void noPartnerWorlds() {
+
+            // Add worlds
+            WorldMock miningWorld = new WorldMock();
+            miningWorld.setName("mining");
+            server.addWorld(miningWorld);
+            WorldMock eventWorld = new WorldMock();
+            eventWorld.setName("event");
+            server.addWorld(eventWorld);
+
+            // Add player to mining world
+            Player player = server.addPlayer();
+
+            // Database must be empty
+            assertThat(TDatabaseInventory.find.query().findCount() == 0).isTrue();
+
+            // Add player inventory (at mining world)
+            player.teleport(miningWorld.getSpawnLocation());
+            player.setSaturation(1.23F);
+            plugin.getInventoryManager().savePlayerInventory(player);
+
+            // Check if added
+            assertThat(TDatabaseInventory.find.query().findCount() == 1).isTrue();
+
+            // Teleport player to event world and try to restore
+            player.teleport(eventWorld.getSpawnLocation());
+            player.setSaturation(9.87F);
+            plugin.getInventoryManager().restorePlayerInventory(player);
+
+            // Saturation must still be 9.87
+            assertThat(player.getSaturation() == 9.87F).isTrue();
+        }
+
+        @Test
         @DisplayName("precache-inventory-no-world-config")
         void precacheInventoryNoWorldConfig() {
 
