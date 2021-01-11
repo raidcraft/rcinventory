@@ -65,7 +65,7 @@ dependencies {
     implementation 'net.silthus:ebean-wrapper:2.9.1'
     implementation 'net.silthus.configlib:configlib-bukkit:2.6.0'
     implementation 'co.aikar:acf-paper:0.5.0-SNAPSHOT'
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.0'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.1'
 
     implementation 'net.kyori:adventure-api:4.4.0'
     implementation 'net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT'
