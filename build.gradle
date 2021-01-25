@@ -59,7 +59,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'com.destroystokyo.paper:paper-api:1.16.4-R0.1-SNAPSHOT'
+    compileOnly 'com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT'
     //compileOnly spigot(mcVersion)
 
     implementation 'net.silthus:ebean-wrapper:2.8.1'
