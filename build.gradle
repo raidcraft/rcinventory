@@ -73,7 +73,7 @@ dependencies {
 
     implementation group: 'io.art-framework', name: 'art-core', version: '4.5.4'
 
-    testImplementation 'io.ebean:ebean-test:12.8.1'
+    testImplementation 'io.ebean:ebean-test:12.8.2'
 
     testImplementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
     testImplementation group: 'com.h2database', name: 'h2', version: '1.4.200'
