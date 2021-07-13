@@ -73,13 +73,13 @@ dependencies {
 
     implementation group: 'io.art-framework', name: 'art-core', version: '4.5.4'
 
-    testImplementation 'io.ebean:ebean-test:12.8.2'
+    testImplementation 'io.ebean:ebean-test:12.9.3'
 
     testImplementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
     testImplementation group: 'com.h2database', name: 'h2', version: '1.4.200'
     testImplementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.7.3'
     testImplementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.25'
-    testImplementation group: 'org.xerial', name: 'sqlite-jdbc', version: '3.34.0'
+    testImplementation group: 'org.xerial', name: 'sqlite-jdbc', version: '3.36.0.1'
     testImplementation group: 'org.postgresql', name: 'postgresql', version: '42.2.19'
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.+'
